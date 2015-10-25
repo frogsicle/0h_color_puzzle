@@ -297,3 +297,4 @@ class Card(Drawable):
         self.filter_left._color = self.filter_left.choose_color((255,255,255))
         #self.filter_left._color = self.filter_left.calculate_color((255,255,255),)
 
+
