@@ -294,6 +294,6 @@ class Card(Drawable):
         Drawable.__init__(self, xvel=0, yvel=0, x=pos_x * length, y=pos_y * length, xsize=length*2, ysize=length)
         self.filter_left = Filter(length, pos_x, pos_y)
         self.filter_right = Filter(length, pos_x + 1, pos_y)
-        #self.filter_left.color = self.filter_left.choose_color((255,255,255))
-        #self.filter_left.color = self.filter_left.calculate_color((255,255,255))
+        self.filter_left._color = self.filter_left.choose_color((255,255,255))
+        #self.filter_left._color = self.filter_left.calculate_color((255,255,255),)
 
