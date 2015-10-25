@@ -176,7 +176,7 @@ class Drawable(object):
     def draw(self, display):
         if self._shapeStr == "rectangle":
             if isinstance(self._shape, pygame.Rect):
-                pygame.draw.rect(display, self._color, self._shape, 0)
+                pygame.draw.rect(display, self.color, self._shape, 0)
         else:
             #TODO
             pass
@@ -264,37 +264,45 @@ class Drawable(object):
 class Tile(Drawable):
 
     def __init__(self, length, pos_x, pos_y):
-        Drawable.__init__(self, yvel=0, xvel=0)
-        self._x = pos_x * length
-        self._y = pos_y * length
-        self._xsize = length
-        self._ysize = length
-        self.color = (200,200,100)
+        Drawable.__init__(self, yvel=0, xvel=0, color=(50,200,100), xsize=length, ysize=length, x=pos_x * length,
+                          y=pos_y * length)
+#        self.x = pos_x * length
+#        self.y = pos_y * length
+#        self._xsize = length
+#        self._ysize = length
+#        self._color = (200,200,100)
+        self.pos_x = pos_x
+        self.pos_y = pos_y
 
 class Filter(Tile):
     def __init__(self, length, pos_x, pos_y):
         Tile.__init__(self, length, pos_x, pos_y)
 
     def choose_color(self, col_target):
-        # where ranges is a (r,g,b) tuple
+        # where col_target is a (r,g,b) tuple
         channels = [0,0,0]
         for i in range(3):
             channels[i] = random.choice(range(col_target[i]))
-        self.color = tuple(channels)
-        print(self.color)
+
+        return tuple(channels)
 
     def calculate_color(self, col_target, other):
         channels = [0,0,0]
         for i in range(3):
             channels[i] = col_target[i] - other.color[i]
-        self.color = tuple(channels)
+ #       print("-".join(channels))
+        return tuple(channels)
 
 class Card(Drawable):
     def __init__(self, length, pos_x, pos_y):
         Drawable.__init__(self, xvel=0, yvel=0, x=pos_x * length, y=pos_y * length, xsize=length*2, ysize=length)
         self.filter_left = Filter(length, pos_x, pos_y)
         self.filter_right = Filter(length, pos_x + 1, pos_y)
-        self.filter_left._color = self.filter_left.choose_color((255,255,255))
+#        self.filter_left._color = self.filter_left.choose_color((255,255,255))
+        self.pos_x = pos_x
+        self.pos_y = pos_y
         #self.filter_left._color = self.filter_left.calculate_color((255,255,255),)
 
-
+#    def draw(self,screen):
+#        self.filter_left.draw(screen)
+#        self.filter_right.draw(screen)

@@ -63,6 +63,22 @@ def texts(screen, font):
     screen.blit(scoretext, (500, 457))
 
 
+def get_overlap(pos_x, pos_y, cards, filters_left, filters_right, boardY):
+    out = Filter(1,0,0)
+    if pos_y == 0:
+        for item in filters_left:
+            if item.pos_x == pos_x:
+                out = item
+    elif pos_y == boardY:
+        for item in filters_right:
+            if item.pos_x == pos_x:
+                out = item
+    else:
+        for card in cards:
+            if card.pos_x == pos_x & card.pos_y == pos_y:
+                out = card
+    return out
+
 def main():
     # global PREVIEWPANEL
     pygame.init()
@@ -74,6 +90,34 @@ def main():
     pygame.mouse.set_visible(1)
     clock = pygame.time.Clock()
     # init
+    col_target = (255,255,255)
+    boardX = 3
+    boardY = 2
+    n_col = 2
+    length = 50
+    cards = []
+    filters_left = []
+    filters_right = []
+    # lay cards
+    for pos_x in range(boardX):
+        for pos_y in range(boardY + 1):
+            new_card = Card(length, pos_x, pos_y)
+            cards += [new_card]
+    # color left board side
+    for pos_y in range(pos_y + 1):
+        new_filt = Filter(length,0,pos_y)
+        new_filt.choose_color(col_target)
+        filters_left += [new_filt]
+
+    for card in cards:
+        left_other = get_overlap(card.pos_x, card.pos_y, cards, filters_left, filters_right=[], boardY=boardY)
+        card.filter_left.calculate_color(col_target, left_other) #100s for testing
+        card.filter_right.choose_color(col_target)
+
+    for pos_y in range(pos_y + 1):
+        new_filt = Filter(length, boardX, pos_y)
+        left_other = get_overlap(boardX, pos_y, cards, filters_left, filters_right=[], boardY=boardY)
+        new_filt.calculate_color(col_target, left_other)
     # init board tiles
 
     # init cards
@@ -82,17 +126,18 @@ def main():
 
     global SCORE
     global RUNNING
-    BOARD_X = 3
-    BOARD_Y = 2
+    BOARD_X = 5
+    BOARD_Y = 4
     entityList = []
     for  i in range(0,BOARD_X-1):
         for j in range(0, BOARD_Y):
             entityList.append(Card(length=50,pos_x=BOARD_X,pos_y=j))
     for e in entityList:
-        e.filter_left.choose_color((255,255,255))
-        print(e)
-        e.filter_right.choose_color((255,255,255))
-    countdown_time = 9900
+        e.color = e.filter_left.choose_color((255,255,255))
+        print("e.color")
+        print(e.color)
+        e.color = e.filter_right.choose_color((255,255,255))
+    countdown_time = 99900
     time_played = 0
     while RUNNING:
         dt = clock.tick(60)
@@ -109,6 +154,7 @@ def main():
 
         screen.blit(screen, (0, 0))
         for i, e in enumerate(entityList):
+            print(e.color)
             e.draw(screen)
 
         pygame.display.flip()
