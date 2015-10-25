@@ -259,3 +259,12 @@ class Drawable(object):
 
         self.move()
         other.move()
+
+class Tile(Drawable):
+    pass
+
+class Filter(Tile):
+    pass
+
+class Card(Tile):
+    pass
