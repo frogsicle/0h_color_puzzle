@@ -1,5 +1,6 @@
 import math
 import pygame
+import random
 
 ## recycled from Enzymemania
 class Drawable(object):
@@ -261,10 +262,34 @@ class Drawable(object):
         other.move()
 
 class Tile(Drawable):
-    pass
+
+    def __init__(self, length, pos_x, pos_y):
+        Drawable.__init__(self, yvel=0, xvel=0)
+        self._x = pos_x * length
+        self._y = pos_y * length
+        self._xsize = length
+        self._ysize = length
+        self.color = (200,200,200)
 
 class Filter(Tile):
-    pass
+    def __init__(self, length, pos_x, pos_y):
+        Tile.__init__(self, length, pos_x, pos_y)
 
-class Card(Tile):
-    pass
+    def choose_color(self, col_target):
+        # where ranges is a (r,g,b) tuple
+        channels = [0,0,0]
+        for i in range(3):
+            channels[i] = random.choice(range(col_target[i]))
+        self.color = tuple(channels)
+
+    def calculate_color(self, col_target, other):
+        channels = [0,0,0]
+        for i in range(3):
+            channels[i] = col_target[i] - other.color[i]
+        self.color = tuple(channels)
+
+class Card(Drawable):
+    def __init__(self, length, pos_x, pos_y):
+        Drawable.__init__(xvel=0, yvel=0, x=pos_x * length, y=pos_y * length)
+        self.filter_left = Filter(length, pos_x, pos_y)
+        self.filter_right = Filter(length, pos_x + 1, pos_y)
