@@ -49,6 +49,7 @@ def checkEvents(entityList):
                     #print(act)
                     act[0].x = pygame.mouse.get_pos()[0]
                     act[0].y = pygame.mouse.get_pos()[1]
+                    act[0].move_components()
                     #if event.button
                     #active_entity = None
             except UnboundLocalError:
@@ -63,20 +64,22 @@ def texts(screen, font):
     screen.blit(scoretext, (500, 457))
 
 
-def get_overlap(pos_x, pos_y, cards, filters_left, filters_right, boardY):
+def get_overlap(pos_x, pos_y, cards):
     out = Filter(1,0,0)
-    if pos_y == 0:
-        for item in filters_left:
-            if item.pos_x == pos_x:
-                out = item
-    elif pos_y == boardY:
-        for item in filters_right:
-            if item.pos_x == pos_x:
-                out = item
+    if False:
+        pass
     else:
+        print('card overlap')
         for card in cards:
-            if card.pos_x == pos_x & card.pos_y == pos_y:
-                out = card
+            print(card.filter_right.pos_x)
+            print(card.pos_y)
+            print(pos_x)
+            print(pos_y)
+            print('---')
+            if card.filter_right.pos_x == pos_x and card.pos_y == pos_y:
+                print('match')
+                out = card.filter_right
+                print(out.color)
     return out
 
 def main():
@@ -104,20 +107,12 @@ def main():
             new_card = Card(length, pos_x, pos_y)
             cards += [new_card]
     # color left board side
-    for pos_y in range(pos_y + 1):
+    for pos_y in range(boardY + 1):
         new_filt = Filter(length,0,pos_y)
         new_filt.choose_color(col_target)
         filters_left += [new_filt]
 
-    for card in cards:
-        left_other = get_overlap(card.pos_x, card.pos_y, cards, filters_left, filters_right=[], boardY=boardY)
-        card.filter_left.calculate_color(col_target, left_other) #100s for testing
-        card.filter_right.choose_color(col_target)
 
-    for pos_y in range(pos_y + 1):
-        new_filt = Filter(length, boardX, pos_y)
-        left_other = get_overlap(boardX, pos_y, cards, filters_left, filters_right=[], boardY=boardY)
-        new_filt.calculate_color(col_target, left_other)
     # init board tiles
 
     # init cards
@@ -131,12 +126,13 @@ def main():
     entityList = []
     for  i in range(0,BOARD_X-1):
         for j in range(0, BOARD_Y):
-            entityList.append(Card(length=50,pos_x=BOARD_X,pos_y=j))
+            entityList.append(Card(length=50,pos_x=i,pos_y=j))
     for e in entityList:
-        e.color = e.filter_left.choose_color((255,255,255))
-        print("e.color")
-        print(e.color)
-        e.color = e.filter_right.choose_color((255,255,255))
+        left_other = get_overlap(e.pos_x, e.pos_y, entityList)
+        e.filter_left.color = e.filter_left.calculate_color((255,255,255),left_other)
+        e.filter_left.ori_color = e.filter_left.color
+        e.filter_right.color = e.filter_right.choose_color((255,255,255))
+        e.filter_right.ori_color = e.filter_right.color
     countdown_time = 99900
     time_played = 0
     while RUNNING:
@@ -154,7 +150,6 @@ def main():
 
         screen.blit(screen, (0, 0))
         for i, e in enumerate(entityList):
-            print(e.color)
             e.draw(screen)
 
         pygame.display.flip()

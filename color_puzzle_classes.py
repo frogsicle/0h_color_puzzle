@@ -174,12 +174,13 @@ class Drawable(object):
             self._name = val
 
     def draw(self, display):
-        if self._shapeStr == "rectangle":
-            if isinstance(self._shape, pygame.Rect):
-                pygame.draw.rect(display, self.color, self._shape, 0)
-        else:
-            #TODO
-            pass
+#        if self._shapeStr == "rectangle":
+#            if isinstance(self._shape, pygame.Rect):
+#                pygame.draw.rect(display, self.color, self._shape, 0)
+#        else:
+#            #TODO
+#            pass
+        pygame.draw.rect(display, self.color, self._shape, 0)
 
     def move(self, x=None, y=None, boundx=800, boundy=500):
         if x is None:
@@ -264,8 +265,9 @@ class Drawable(object):
 class Tile(Drawable):
 
     def __init__(self, length, pos_x, pos_y):
-        Drawable.__init__(self, yvel=0, xvel=0, color=(50,200,100), xsize=length, ysize=length, x=pos_x * length,
+        Drawable.__init__(self, yvel=0, xvel=0, color=(25,25,25), xsize=length, ysize=length,
                           y=pos_y * length)
+        self.x = pos_x * length
 #        self.x = pos_x * length
 #        self.y = pos_y * length
 #        self._xsize = length
@@ -274,9 +276,13 @@ class Tile(Drawable):
         self.pos_x = pos_x
         self.pos_y = pos_y
 
+
+
 class Filter(Tile):
     def __init__(self, length, pos_x, pos_y):
         Tile.__init__(self, length, pos_x, pos_y)
+        self.x = pos_x * length
+        self.ori_color = self.color
 
     def choose_color(self, col_target):
         # where col_target is a (r,g,b) tuple
@@ -293,6 +299,17 @@ class Filter(Tile):
  #       print("-".join(channels))
         return tuple(channels)
 
+    def overlap_color(self, other):
+        new_colors = [0, 0, 0]
+        for i in range(3):
+            new_colors[i] = self.color[i] + other.color[i]
+            while new_colors[i] > 255:
+                new_colors[i] -= 255
+        return tuple(new_colors)
+
+
+
+
 class Card(Drawable):
     def __init__(self, length, pos_x, pos_y):
         Drawable.__init__(self, xvel=0, yvel=0, x=pos_x * length, y=pos_y * length, xsize=length*2, ysize=length)
@@ -303,6 +320,12 @@ class Card(Drawable):
         self.pos_y = pos_y
         #self.filter_left._color = self.filter_left.calculate_color((255,255,255),)
 
-#    def draw(self,screen):
-#        self.filter_left.draw(screen)
-#        self.filter_right.draw(screen)
+    def move_components(self):
+        self.filter_left.x = self.x
+        self.filter_left.y = self.y
+        self.filter_right.x = self.x + self.filter_left.xsize
+        self.filter_right.y = self.y
+
+    def draw(self,screen):
+       self.filter_left.draw(screen)
+       self.filter_right.draw(screen)
