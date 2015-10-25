@@ -290,6 +290,9 @@ class Filter(Tile):
 
 class Card(Drawable):
     def __init__(self, length, pos_x, pos_y):
-        Drawable.__init__(xvel=0, yvel=0, x=pos_x * length, y=pos_y * length)
+        Drawable.__init__(self, xvel=0, yvel=0, x=pos_x * length, y=pos_y * length)
         self.filter_left = Filter(length, pos_x, pos_y)
         self.filter_right = Filter(length, pos_x + 1, pos_y)
+
+
+
