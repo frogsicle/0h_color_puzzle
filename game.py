@@ -68,15 +68,17 @@ def main():
     pygame.init()
     #todo
     font = pygame.font.Font("Arcade.ttf", 128)
-    # countdown_font=pygame.font.Font("Arcade.ttf", 128)
-    # enzyme_font=pygame.font.Font("Arcade.ttf",24)
-    # score_font=pygame.font.SysFont("monospace",18)
-    # metabolite_font=pygame.font.Font("SFSquareHead.ttf", 18)
 
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("0h")
     pygame.mouse.set_visible(1)
     clock = pygame.time.Clock()
+    # init
+    # init board tiles
+
+    # init cards
+
+    # scramble cards
     #init reactionlist
     #global REACTIONSET
     #preReactionSet = makeReactionSet(pathway_name='PWY-241')
@@ -89,7 +91,16 @@ def main():
     #global RUNNING
     global SCORE
     global RUNNING
+    BOARD_X = 3
+    BOARD_Y = 2
     entityList = []
+    for  i in range(0,BOARD_X-1):
+        for j in range(0, BOARD_Y):
+            entityList.append(Card(length=50,pos_x=BOARD_X,pos_y=j))
+    for e in entityList:
+        e.filter_left.choose_color((255,255,255))
+        print(e)
+        e.filter_right.choose_color((255,255,255))
     #print(REACTIONSET)
     #appendSource(entityList)
     #appendSink(entityList,SINK)
@@ -100,7 +111,7 @@ def main():
     #p.nextEnzyme = e
     #entityList.append(p)
     #spawningTime = 0
-    countdown_time = 99000
+    countdown_time = 9900
     time_played = 0
     while RUNNING:
         dt = clock.tick(60)
@@ -135,7 +146,7 @@ def main():
             #if not e.textDrawn:
             #    e.addText(screen=screen, font=font)
 
-            e.checkCollisionList(entityList[:i],entityList=entityList)
+            #e.checkCollisionList(entityList[:i],entityList=entityList)
             # bounceOff(e)
             # if isOutOfSight(e):
             #     entityList.remove(e)

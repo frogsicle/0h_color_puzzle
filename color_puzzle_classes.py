@@ -9,7 +9,7 @@ class Drawable(object):
     def __init__(self, name="",
                  x=0, y=0, xvel=1.0, yvel=1.0,
                  angle= math.pi/2, xsize=10, ysize=10,
-                 color=(0, 255, 0), shapeStr="rectangle"):
+                 color=(0, 50, 0), shapeStr="rectangle"):
 
         Drawable.ID += 1
         self.id = Drawable.ID
@@ -214,7 +214,7 @@ class Drawable(object):
                     #otherList[i].collide()
                     otherList[i].bounceOff(self,entityList=entityList)
                     self.bounceOff(otherList[i])
-                self._color = (255, 0, 0)
+                #self._color = (255, 0, 0)
         except TypeError as e:
             print(e)
 
@@ -269,7 +269,7 @@ class Tile(Drawable):
         self._y = pos_y * length
         self._xsize = length
         self._ysize = length
-        self.color = (200,200,200)
+        self.color = (200,200,100)
 
 class Filter(Tile):
     def __init__(self, length, pos_x, pos_y):
@@ -281,6 +281,7 @@ class Filter(Tile):
         for i in range(3):
             channels[i] = random.choice(range(col_target[i]))
         self.color = tuple(channels)
+        print(self.color)
 
     def calculate_color(self, col_target, other):
         channels = [0,0,0]
@@ -293,6 +294,7 @@ class Card(Drawable):
         Drawable.__init__(self, xvel=0, yvel=0, x=pos_x * length, y=pos_y * length, xsize=length*2, ysize=length)
         self.filter_left = Filter(length, pos_x, pos_y)
         self.filter_right = Filter(length, pos_x + 1, pos_y)
-
+        #self.filter_left.color = self.filter_left.choose_color((255,255,255))
+        #self.filter_left.color = self.filter_left.calculate_color((255,255,255))
 
 
