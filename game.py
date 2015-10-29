@@ -35,9 +35,6 @@ def checkEvents(entityList):
                         print("entity", entity.id)
                         ACTIVE = entity.id
                         print(ACTIVE)
-                        #entity.x = pygame.mouse.get_pos()[0]
-                        #entity.y = pygame.mouse.get_pos()[1]
-                        #print(entity)
                         break
         elif event.type == pygame.MOUSEBUTTONUP:
             ACTIVE = None
@@ -69,18 +66,13 @@ def get_overlap(pos_x, pos_y, cards):
     if False:
         pass
     else:
-        print('card overlap')
+#        print('card overlap')
         for card in cards:
-            print(card.filter_right.pos_x)
-            print(card.pos_y)
-            print(pos_x)
-            print(pos_y)
-            print('---')
             if card.filter_right.pos_x == pos_x and card.pos_y == pos_y:
-                print('match')
                 out = card.filter_right
-                print(out.color)
+
     return out
+
 
 def main():
     # global PREVIEWPANEL
@@ -93,36 +85,11 @@ def main():
     pygame.mouse.set_visible(1)
     clock = pygame.time.Clock()
     # init
-    col_target = (255,255,255)
-    boardX = 3
-    boardY = 2
-    n_col = 2
-    length = 50
-    cards = []
-    filters_left = []
-    filters_right = []
-    # lay cards
-    for pos_x in range(boardX):
-        for pos_y in range(boardY + 1):
-            new_card = Card(length, pos_x, pos_y)
-            cards += [new_card]
-    # color left board side
-    for pos_y in range(boardY + 1):
-        new_filt = Filter(length,0,pos_y)
-        new_filt.choose_color(col_target)
-        filters_left += [new_filt]
-
-
-    # init board tiles
-
-    # init cards
-
-    # scramble cards
 
     global SCORE
     global RUNNING
-    BOARD_X = 5
-    BOARD_Y = 4
+    BOARD_X = 4
+    BOARD_Y = 2
     entityList = []
     filterList = []
     for  i in range(0,BOARD_X-1):
@@ -136,16 +103,15 @@ def main():
         e.filter_right.ori_color = e.filter_right.color
         filterList.append(e.filter_right)
         filterList.append(e.filter_left)
-        print('appended')
+
     countdown_time = 99900
     time_played = 0
     while RUNNING:
         dt = clock.tick(60)
         checkEvents(entityList)
-   #     filterList = [x for x in entityList if x.__class__ == "Filter"]
-   #     print(filterList)
-        for filter in filterList:
-            filter.checkCollisionList(filterList)
+        for card in entityList:
+            card.filter_left.checkCollisionList(filterList, ignore=card.filter_right)
+            card.filter_right.checkCollisionList(filterList, ignore=card.filter_left)
         screen.fill((0, 0, 0))
         #todo
         if countdown_time > 0:
