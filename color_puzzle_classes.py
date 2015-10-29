@@ -206,7 +206,7 @@ class Drawable(object):
         except TypeError as e:
             print(e)
 
-    def checkCollisionList(self, otherList, entityList):
+    def checkCollisionList(self, otherList, entityList): #todo trim to usefull
         others = [o.shape for o in otherList]
         try:
             collided = (self.shape.collidelistall(others))
@@ -307,6 +307,28 @@ class Filter(Tile):
                 new_colors[i] -= 255
         return tuple(new_colors)
 
+    def checkCollisionList(self, filterList):
+        others = [o.shape for o in filterList]
+        try:
+            collided = (self.shape.collidelistall(others))
+            print(collided)
+            print('collided')
+            if len(collided) > 0:
+                for i in collided:
+                    self.color = self.overlap_color(filterList[i])
+#                    #otherList[i].collide()
+#                    if isinstance(otherList[i],Enzyme):
+#                        otherList[i].bounceOff(self,entityList=entityList)
+#                        self.bounceOff(otherList[i])
+#                    elif isinstance(self,Enzyme):
+#                        self.bounceOff(otherList[i],entityList=entityList)
+#                        otherList[i].bounceOff(self)
+#                    else:
+#                        self.bounceOff(otherList[i])
+#                        otherList[i].bounceOff(self)
+#                self._color = (255, 0, 0)
+        except TypeError as e:
+            print(e)
 
 
 

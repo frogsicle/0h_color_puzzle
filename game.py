@@ -124,6 +124,7 @@ def main():
     BOARD_X = 5
     BOARD_Y = 4
     entityList = []
+    filterList = []
     for  i in range(0,BOARD_X-1):
         for j in range(0, BOARD_Y):
             entityList.append(Card(length=50,pos_x=i,pos_y=j))
@@ -133,11 +134,18 @@ def main():
         e.filter_left.ori_color = e.filter_left.color
         e.filter_right.color = e.filter_right.choose_color((255,255,255))
         e.filter_right.ori_color = e.filter_right.color
+        filterList.append(e.filter_right)
+        filterList.append(e.filter_left)
+        print('appended')
     countdown_time = 99900
     time_played = 0
     while RUNNING:
         dt = clock.tick(60)
         checkEvents(entityList)
+   #     filterList = [x for x in entityList if x.__class__ == "Filter"]
+   #     print(filterList)
+        for filter in filterList:
+            filter.checkCollisionList(filterList)
         screen.fill((0, 0, 0))
         #todo
         if countdown_time > 0:
